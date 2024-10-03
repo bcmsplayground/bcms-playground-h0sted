@@ -39,19 +39,8 @@
 {/if}
 
 <style>
-  /* Global reset */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
   html,
   body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
     overflow: hidden; /* Disable scrollbars */
   }
 
@@ -61,14 +50,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Full viewport height */
-    width: 100vw; /* Full viewport width */
+    height: 100%; /* Full viewport height */
+    width: 100%; /* Full viewport width */
     background: linear-gradient(
       to right,
       #ffb6c1,
       #ffe4e1
     ); /* Pastel background */
     text-align: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
   }
 
   .title {
@@ -103,8 +95,11 @@
 
   /* Fix to center content in column layout for Genitive Practice */
   .genitive-container {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
     display: flex;
     flex-direction: column; /* Ensure vertical layout */
     align-items: center;
