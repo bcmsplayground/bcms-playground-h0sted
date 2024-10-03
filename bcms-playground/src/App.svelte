@@ -39,11 +39,6 @@
 {/if}
 
 <style>
-  html,
-  body {
-    overflow: hidden; /* Disable scrollbars */
-  }
-
   /* Styling for the main page */
   .main-container {
     display: flex;

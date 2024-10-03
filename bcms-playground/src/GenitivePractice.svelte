@@ -29,20 +29,25 @@
   ];
 
   // Track the remaining sentences and answered questions
+  // We duplicate the sentences to avoid mutating the original set.
   let remainingSentences = [...sentences];
+  // How many questions did the user answer correctly?
   let answeredCorrectly = 0;
-  let totalQuestions = sentences.length;
-
-  // Track first try correctness
+  // Track whether this answer is the user's first try. Users shouldn't score
+  // unless they get the question right on their first try. We track this in
+  // global state since we react to answers that a user provides one-by-one.
+  // The function chooseAnswer below is responsible for handling state.
   let firstTry = true;
+  // Track the 'feedback' for their answer: i.e., is the answer correct?
+  let feedback = "";
+  let totalQuestions = sentences.length;
 
   // Initialize the first sentence
   let currentIndex = Math.floor(Math.random() * remainingSentences.length);
   let currentSentence = remainingSentences[currentIndex];
 
-  // Track user's answer and feedback
+  // Track the answer that the user provided to the current question.
   let selectedAnswer = null;
-  let feedback = "";
 
   // Array of choices for genitive case (restricted to 'e' and 'a')
   let vowelChoices = ["a", "e"];
@@ -54,16 +59,19 @@
     "How about another round? 💖",
     "Shall we go again? 💫",
   ];
+  const getRestartPhrase = () => {
+    return restartPhrases[Math.floor(Math.random() * restartPhrases.length)];
+  };
 
-  // Randomly select a cute restart phrase
-  let selectedRestartPhrase =
-    restartPhrases[Math.floor(Math.random() * restartPhrases.length)];
-
-  // Track animation state
+  // Seed a cute restart phrase.
+  let selectedRestartPhrase = getRestartPhrase();
+  // Track animation state. This changes when a question is answered correctly.
+  // This will affect the styles of components so that they have a 'slide-off'
+  // effect while questions switch.
   let transitioning = false;
 
   // Function to handle user's choice
-  function chooseAnswer(choice) {
+  const chooseAnswer = (choice) => {
     selectedAnswer = choice;
 
     // Check if the choice matches the correct answer
@@ -80,19 +88,19 @@
       feedback = INCORRECT;
       firstTry = false; // User guessed wrong, disable first try bonus
     }
-  }
+  };
 
   // Animate the transition to the next sentence
-  function transitionToNext() {
+  const transitionToNext = () => {
     transitioning = true;
     setTimeout(() => {
       nextSentence();
       transitioning = false;
     }, 500); // Half-second slide animation
-  }
+  };
 
   // Move to the next sentence and ensure no repeats
-  function nextSentence() {
+  const nextSentence = () => {
     feedback = "";
     selectedAnswer = null;
     firstTry = true; // Reset first try for new question
@@ -102,25 +110,25 @@
 
     // Check if there are remaining sentences
     if (remainingSentences.length > 0) {
-      // Pick a new random sentence
+      // Pick a new random sentence. Note that we mutate the global state of 'currentIndex'
+      // when we do this.
       currentIndex = Math.floor(Math.random() * remainingSentences.length);
       currentSentence = remainingSentences[currentIndex];
     } else {
       // No more sentences available (game is finished)
       currentSentence = null;
       // Randomly select a new cute restart phrase for the button
-      selectedRestartPhrase =
-        restartPhrases[Math.floor(Math.random() * restartPhrases.length)];
+      selectedRestartPhrase = getRestartPhrase();
     }
-  }
+  };
 
   // Function to restart the quiz
-  function restartQuiz() {
+  const restartQuiz = () => {
     remainingSentences = [...sentences];
     answeredCorrectly = 0;
     currentIndex = Math.floor(Math.random() * remainingSentences.length);
     currentSentence = remainingSentences[currentIndex];
-  }
+  };
 
   // Reactive statement to update the sentence parts whenever the sentence changes
   $: parts = currentSentence
@@ -263,11 +271,6 @@
   /* Slide out to the left */
   .slide-out {
     transform: translateX(-100%);
-  }
-
-  /* Slide in from the right */
-  .slide-in {
-    transform: translateX(100%);
   }
 
   .choices {
