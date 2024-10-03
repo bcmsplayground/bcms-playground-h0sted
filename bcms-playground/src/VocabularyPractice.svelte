@@ -242,10 +242,6 @@
     transform-style: preserve-3d;
   }
 
-  .flipped {
-    transform: rotateY(180deg);
-  }
-
   .flashcard-front,
   .flashcard-back {
     position: absolute;
